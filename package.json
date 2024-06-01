@@ -1,0 +1,15 @@
+{
+    "name": "fewo",
+    "version": "1.0.0",
+    "description": "Writing own frontend framework to learn and for fun",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "workspaces": [
+        "packages/runtime"
+    ],
+    "private": true,
+    "author": "",
+    "license": "ISC"
+}
