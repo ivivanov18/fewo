@@ -1,0 +1,19 @@
+{
+    "name": "runtime",
+    "version": "1.0.0",
+    "description": "",
+    "source": "src/index.js",
+    "main": "dist/fewo.js",
+    "scripts": {
+        "build": "parcel build"
+    },
+    "files": [
+        "dist/fewo.js"
+    ],
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "parcel": "^2.12.0"
+    }
+}
