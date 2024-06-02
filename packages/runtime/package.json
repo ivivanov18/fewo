@@ -5,7 +5,9 @@
     "source": "src/index.js",
     "main": "dist/fewo.js",
     "scripts": {
-        "build": "parcel build"
+        "build": "parcel build",
+        "lint": "eslint src",
+        "lint:fix": "eslint src --fix"
     },
     "files": [
         "dist/fewo.js"
@@ -14,6 +16,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "eslint": "^9.4.0",
         "parcel": "^2.12.0"
     }
 }
