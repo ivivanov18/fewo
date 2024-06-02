@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { DOM_TYPES, hString } from "../f";
+import { DOM_TYPES, hString, f } from "../f";
 
 test("Should return string node with value", () => {
     const str = "This is a text";
@@ -10,4 +10,19 @@ test("Should return string node with value", () => {
     const returnedNode = hString(str);
 
     expect(returnedNode).toMatchObject(expectedNode);
+});
+
+test("Should return an element node", () => {
+    const tag = "div";
+    const props = { id: "test" };
+    const children = [hString("test")];
+    const expectedNode = {
+        children,
+        props,
+        type: DOM_TYPES.ELEMENT,
+    };
+
+    const elNode = f(tag, props, children);
+
+    expect(elNode).toMatchObject(expectedNode);
 });
