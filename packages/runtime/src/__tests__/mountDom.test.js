@@ -1,6 +1,11 @@
-import { test, expect } from "vitest";
+import { test, expect, beforeEach, vi } from "vitest";
 import { mountDom } from "../mountDom";
-import { hString, f } from "../f";
+import { hString, f, hFragment } from "../f";
+
+beforeEach(() => {
+    vi.unstubAllGlobals();
+    document.body.innerHTML = "";
+});
 
 test("Should throw error for none recognized dom type", () => {
     const unknown = "unknown";
@@ -39,5 +44,45 @@ test("Should save the text element in the vdom", () => {
     mountDom(vdom, p);
     const { el } = vdom;
 
-    expect(vdom.el).to;
+    expect(el).toBeInstanceOf(Text);
+    expect(p.innerHTML).toBe(text);
+});
+
+test("Should save a reference of the parent when mounting a fragment", () => {
+    const text = "This a default text";
+    const vdom = hFragment([hString(text)]);
+    const p = document.createElement("p");
+    document.body.append(p);
+
+    mountDom(vdom, p);
+
+    expect(vdom.el).toBe(p);
+});
+
+test("all nested fragments should have a reference to the same parent element", () => {
+    const vdomOne = hFragment([hString("hi"), hString("hello there")]);
+    const vdomTwo = hFragment([vdomOne]);
+    const vdomThree = hFragment([vdomTwo]);
+
+    mountDom(vdomThree, document.body);
+
+    expect(vdomThree.el).toBe(document.body);
+    expect(vdomTwo.el).toBe(document.body);
+    expect(vdomOne.el).toBe(document.body);
+});
+
+test("Should mount an element with id", () => {
+    const vdom = f("div", { id: "home-div" });
+
+    mountDom(vdom);
+
+    expect(document.body.innerHTML).toBe('<div id="home-div"></div>');
+});
+
+test("Should mount an element with class", () => {
+    const vdom = f("div", { class: "test-class" });
+
+    mountDom(vdom);
+
+    expect(document.body.innerHTML).toBe('<div class="test-class"></div>');
 });
