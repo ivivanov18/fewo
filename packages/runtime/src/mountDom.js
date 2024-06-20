@@ -1,3 +1,5 @@
+import { setAttributes } from "./attributes";
+import { addEventListeners } from "./events";
 import { DOM_TYPES } from "./f";
 
 export function mountDom(vdom, parentEl = document.body) {
@@ -37,13 +39,18 @@ function createFragmentNode(vdom, parentEl) {
 }
 
 function createElementNode(vdom, parentEl) {
-    const { tag, props } = vdom;
+    const { tag, props, children } = vdom;
     const el = document.createElement(tag);
-    const attributes = Object.entries(props);
-
-    attributes.forEach(([att, val]) => el.setAttribute(att, val));
-
+    addProps(el, props, vdom);
     vdom.el = el;
 
+    children.forEach((child) => mountDom(child, el));
     parentEl.append(el);
+}
+
+function addProps(el, props, vdom) {
+    const { on: events, ...attrs } = props;
+
+    vdom.listeners = addEventListeners(events, el);
+    setAttributes(attrs, el);
 }

@@ -86,3 +86,34 @@ test("Should mount an element with class", () => {
 
     expect(document.body.innerHTML).toBe('<div class="test-class"></div>');
 });
+
+test("Should mount an elements with arrays of classes", () => {
+    const vdom = f("div", { class: ["class1", "class2", "class3"] });
+
+    mountDom(vdom);
+
+    expect(document.body.innerHTML).toBe(
+        '<div class="class1 class2 class3"></div>'
+    );
+});
+
+test("Should mount an element with style", () => {
+    const vdom = f("div", { style: { fontSize: "16px", border: "10px" } });
+
+    mountDom(vdom);
+    const { el } = vdom;
+
+    expect(document.body.innerHTML).toBe(
+        '<div style="font-size: 16px; border: 10px;"></div>'
+    );
+    expect(el.style.border).toBe("10px");
+    expect(el.style.fontSize).toBe("16px");
+});
+
+test("Should mount an element with handlers", () => {
+    const vdom = f("div", { on: { click: vi.fn() } });
+
+    mountDom(vdom);
+
+    expect(vdom.listeners).toEqual({ click: expect.any(Function) });
+});
