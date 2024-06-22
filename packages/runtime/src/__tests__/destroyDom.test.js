@@ -1,5 +1,5 @@
 import { test, expect, beforeEach } from "vitest";
-import { hFragment, hString, f } from "../f";
+import { fFragment, fString, f } from "../f";
 import { mountDom } from "../mountDom";
 import { destroyDom } from "../destroyDom";
 
@@ -9,7 +9,7 @@ beforeEach(() => {
 
 test("Should destroy text element", () => {
     const text = "Test element";
-    const vdom = hString(text);
+    const vdom = fString(text);
     mountDom(vdom);
 
     expect(document.body.innerHTML).toBe(text);
@@ -21,9 +21,9 @@ test("Should destroy text element", () => {
 });
 
 test("Should destroy fragment node", () => {
-    const vdom = hFragment([
-        f("div", {}, [hString("This is a div")]),
-        f("p", {}, [hString("This is a paragraph")]),
+    const vdom = fFragment([
+        f("div", {}, [fString("This is a div")]),
+        f("p", {}, [fString("This is a paragraph")]),
     ]);
 
     mountDom(vdom);

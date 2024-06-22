@@ -1,6 +1,6 @@
 import { test, expect, beforeEach, vi } from "vitest";
 import { mountDom } from "../mountDom";
-import { hString, f, hFragment } from "../f";
+import { fString, f, fFragment } from "../f";
 
 beforeEach(() => {
     vi.unstubAllGlobals();
@@ -17,7 +17,7 @@ test("Should throw error for none recognized dom type", () => {
 
 test("Should be mounted on document.body by default if no parent element", () => {
     const text = "This is a default text";
-    const vdom = hString(text);
+    const vdom = fString(text);
 
     mountDom(vdom);
 
@@ -26,7 +26,7 @@ test("Should be mounted on document.body by default if no parent element", () =>
 
 test("Should mount a text element into a parent element", () => {
     const text = "This is default text";
-    const vdom = hString(text);
+    const vdom = fString(text);
     const p = document.createElement("p");
     document.body.append(p);
 
@@ -37,7 +37,7 @@ test("Should mount a text element into a parent element", () => {
 
 test("Should save the text element in the vdom", () => {
     const text = "This is default text";
-    const vdom = hString(text);
+    const vdom = fString(text);
     const p = document.createElement("p");
     document.body.append(p);
 
@@ -50,7 +50,7 @@ test("Should save the text element in the vdom", () => {
 
 test("Should save a reference of the parent when mounting a fragment", () => {
     const text = "This a default text";
-    const vdom = hFragment([hString(text)]);
+    const vdom = fFragment([fString(text)]);
     const p = document.createElement("p");
     document.body.append(p);
 
@@ -60,9 +60,9 @@ test("Should save a reference of the parent when mounting a fragment", () => {
 });
 
 test("all nested fragments should have a reference to the same parent element", () => {
-    const vdomOne = hFragment([hString("hi"), hString("hello there")]);
-    const vdomTwo = hFragment([vdomOne]);
-    const vdomThree = hFragment([vdomTwo]);
+    const vdomOne = fFragment([fString("hi"), fString("hello there")]);
+    const vdomTwo = fFragment([vdomOne]);
+    const vdomThree = fFragment([vdomTwo]);
 
     mountDom(vdomThree, document.body);
 

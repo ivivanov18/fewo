@@ -17,18 +17,18 @@ function hyperscript(tag, props = {}, children = []) {
 
 function mapTextNodes(children) {
     return children.map((child) =>
-        typeof child === "string" ? hString(child) : child
+        typeof child === "string" ? fString(child) : child
     );
 }
 
-export function hString(str) {
+export function fString(str) {
     return {
         type: DOM_TYPES.TEXT,
         value: str,
     };
 }
 
-export function hFragment(vNodes) {
+export function fFragment(vNodes) {
     return {
         type: DOM_TYPES.FRAGMENT,
         children: mapTextNodes(withoutNulls(vNodes)),
