@@ -29,7 +29,14 @@ export default class Dispatcher {
         return this.#afterHandlers;
     }
 
-    dispatch(commandName, payload) {}
+    dispatch(commandName, payload) {
+        if (!this.#subs.has(commandName)) {
+            console.warn(`No handlers for command ${commandName}`);
+        } else {
+            this.#subs.get(commandName).forEach((handler) => handler(payload));
+        }
+        this.#afterHandlers.forEach((handler) => handler());
+    }
 
     afterEveryCommand(handler) {
         this.#afterHandlers.push(handler);

@@ -106,4 +106,46 @@ describe("A command dispatcher", () => {
         expect(afterHandlers.length).toBe(0);
         expect(afterHandlers).not.toContain(handler1);
     });
+
+    it("Should display warning message in case the command has no handlers", () => {
+        const spyOnConsoleWarn = vi.spyOn(console, "warn");
+
+        dispatcher.dispatch("not-existing-command", {});
+
+        expect(spyOnConsoleWarn).toHaveBeenCalledWith(
+            "No handlers for command not-existing-command"
+        );
+    });
+
+    it("Should call all the handlers with the right payload", () => {
+        dispatcher.subscribe(command, handler1);
+        dispatcher.subscribe(command, handler2);
+
+        dispatcher.dispatch(command, { test: "test" });
+
+        expect(handler1).toHaveBeenCalledWith(payload);
+        expect(handler2).toHaveBeenCalledOnce(payload);
+    });
+
+    it("Should call afterEveryCommand handlers function after dispatch", () => {
+        const afterHandler = vi.fn();
+        dispatcher.subscribe(command, handler1);
+        dispatcher.afterEveryCommand(afterHandler);
+
+        dispatcher.dispatch(command, payload);
+
+        expect(afterHandler).toHaveBeenCalled();
+    });
+
+    it("should call all afterEveryCommand handlers even if no command handlers exist", () => {
+        const afterHandler1 = vi.fn();
+        const afterHandler2 = vi.fn();
+        dispatcher.afterEveryCommand(afterHandler1);
+        dispatcher.afterEveryCommand(afterHandler2);
+
+        dispatcher.dispatch("nonExistentCommand", { data: "test" });
+
+        expect(afterHandler1).toHaveBeenCalled();
+        expect(afterHandler2).toHaveBeenCalled();
+    });
 });
