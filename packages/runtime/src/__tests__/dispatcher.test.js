@@ -76,4 +76,34 @@ describe("A command dispatcher", () => {
         expect(handlers).toContain(handler1);
         expect(handlers).not.toContain(handler2);
     });
+
+    it("Should register afterHandlers", () => {
+        const unregister = dispatcher.afterEveryCommand(handler1);
+        const afterHandlers = dispatcher.afterHandlers;
+
+        expect(afterHandlers.length).toBe(1);
+        expect(afterHandlers).toContain(handler1);
+    });
+
+    it("Should handle multiple handlers", () => {
+        dispatcher.afterEveryCommand(handler1);
+        dispatcher.afterEveryCommand(handler2);
+
+        const afterHandlers = dispatcher.afterHandlers;
+        expect(afterHandlers.length).toBe(2);
+        expect(afterHandlers).toContain(handler1);
+        expect(afterHandlers).toContain(handler2);
+    });
+
+    it("Should return an unregister function to remove the handler", () => {
+        const unregister = dispatcher.afterEveryCommand(handler1);
+        const afterHandlers = dispatcher.afterHandlers;
+
+        expect(afterHandlers.length).toBe(1);
+        expect(afterHandlers).toContain(handler1);
+
+        unregister();
+        expect(afterHandlers.length).toBe(0);
+        expect(afterHandlers).not.toContain(handler1);
+    });
 });

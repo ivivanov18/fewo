@@ -1,5 +1,6 @@
 export default class Dispatcher {
     #subs = new Map();
+    #afterHandlers = [];
 
     subscribe(commandName, handler) {
         if (!this.#subs.has(commandName)) {
@@ -24,5 +25,18 @@ export default class Dispatcher {
         return this.#subs;
     }
 
+    get afterHandlers() {
+        return this.#afterHandlers;
+    }
+
     dispatch(commandName, payload) {}
+
+    afterEveryCommand(handler) {
+        this.#afterHandlers.push(handler);
+
+        return () => {
+            const idx = this.#afterHandlers.indexOf(handler);
+            this.#afterHandlers.splice(idx, 1);
+        };
+    }
 }
