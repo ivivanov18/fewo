@@ -1,8 +1,8 @@
 {
-    "name": "runtime",
-    "version": "1.0.0",
+    "name": "fewo",
+    "version": "1.0.1",
     "description": "",
-    "source": "src/index.js",
+    "source": "src/app.js",
     "main": "dist/fewo.js",
     "scripts": {
         "build": "parcel build",
