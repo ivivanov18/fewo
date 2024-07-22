@@ -2,7 +2,7 @@ import { mountDom } from "./mountDom";
 import { destroyDom } from "./destroyDom";
 import Dispatcher from "./dispatcher";
 
-function createApp({ state = {}, view, reducers = {} }) {
+export function createApp({ state = {}, view, reducers = {} }) {
     let parentEl = null;
     let vdom = null;
 
