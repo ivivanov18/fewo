@@ -10,3 +10,10 @@ export function objectsDiff(oldObj, newObj) {
         ),
     };
 }
+
+export function arraysDiff(oldArr, newArr) {
+    return {
+        added: newArr.filter((elt) => !oldArr.includes(elt)),
+        removed: oldArr.filter((elt) => !newArr.includes(elt)),
+    };
+}
