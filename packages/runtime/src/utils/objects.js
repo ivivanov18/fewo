@@ -11,6 +11,7 @@ export function objectsDiff(oldObj, newObj) {
     };
 }
 
+//TODO: implement more robust solution by checking the order of the elements
 export function arraysDiff(oldArr, newArr) {
     return {
         added: newArr.filter((elt) => !oldArr.includes(elt)),
