@@ -27,25 +27,25 @@ export function arraysDiffSequence(
 
     for (let i = 0; i < newArray.length; i++) {
         // removal case
-        if (array.isRemoval(index, newArray)) {
-            sequence.push(array.removeItem(index));
-            index--;
+        if (array.isRemoval(i, newArray)) {
+            sequence.push(array.removeItem(i));
+            i--;
             continue;
         }
 
-        if (array.isNoop(index, newArray)) {
+        if (array.isNoop(i, newArray)) {
             sequence.push(array.noopItem(item));
             continue;
         }
 
-        const item = newArray[index];
+        const item = newArray[i];
 
-        if (array.isAddition(item, index)) {
-            sequence.push(array.addItem(item, index));
+        if (array.isAddition(item, i)) {
+            sequence.push(array.addItem(item, i));
             continue;
         }
 
-        sequence.push(array.moveItem(item, index));
+        sequence.push(array.moveItem(item, i));
         sequence.push(...array.removeItemsAfter(newArray.length));
 
         return sequence;
