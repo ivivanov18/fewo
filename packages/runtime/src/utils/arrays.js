@@ -32,12 +32,24 @@ export function arraysDiffSequence(
             index--;
             continue;
         }
-        // addition case
-        // move case
-        // noop case
-    }
 
-    return sequence;
+        if (array.isNoop(index, newArray)) {
+            sequence.push(array.noopItem(item));
+            continue;
+        }
+
+        const item = newArray[index];
+
+        if (array.isAddition(item, index)) {
+            sequence.push(array.addItem(item, index));
+            continue;
+        }
+
+        sequence.push(array.moveItem(item, index));
+        sequence.push(...array.removeItemsAfter(newArray.length));
+
+        return sequence;
+    }
 }
 
 class ArrayWithOriginalIndices {
@@ -68,6 +80,30 @@ class ArrayWithOriginalIndices {
         return indexInNewArray === -1;
     }
 
+    isNoop(index, newArr) {
+        if (index >= this.length) {
+            return false;
+        }
+
+        const item = this.#array[index];
+        const newItem = newArr[index];
+
+        return this.#equalsFn(item, newItem);
+    }
+
+    originalIndexAt(index) {
+        return this.#originalIndices[index];
+    }
+
+    noopItem(index) {
+        return {
+            op: ARRAY_DIFF_OP.NOOP,
+            originalIndex: this.originalIndexAt(index),
+            index,
+            item: this.#array[index],
+        };
+    }
+
     removeItem(index) {
         const operation = {
             index,
@@ -79,5 +115,62 @@ class ArrayWithOriginalIndices {
         this.#originalIndices.splice(index, 1);
 
         return operation;
+    }
+
+    isAddition(item, fromIdx) {
+        return this.findIndexFrom(item, fromIdx) === -1;
+    }
+
+    findIndexFrom(item, fromIndex) {
+        for (let i = fromIndex; i < this.length; i++) {
+            if (this.#equalsFn(item, this.#array[i])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    addItem(item, index) {
+        const operation = {
+            op: ARRAY_DIFF_OP.ADD,
+            index,
+            item,
+        };
+
+        this.#array.splice(index, 0, item);
+        this.#originalIndices.splice(index, 0, -1);
+
+        return operation;
+    }
+
+    moveItem(item, toIndex) {
+        const fromIndex = this.findIndexFrom(item, toIndex);
+
+        const operation = {
+            op: ARRAY_DIFF_OP.MOVE,
+            originalIndex: this.originalIndexAt(fromIndex),
+            from: fromIndex,
+            index: toIndex,
+            item: this.#array[fromIndex],
+        };
+
+        const [_item] = this.#array.splice(fromIndex, 1);
+        this.#array.splice(toIndex, 0, _item);
+
+        const [originalIndex] = this.#originalIndices.splice(fromIndex, 1);
+        this.#originalIndices.splice(toIndex, 0, originalIndex);
+
+        return operation;
+    }
+
+    removeItemsAfter(index) {
+        const operations = [];
+
+        while (this.length > index) {
+            operations.push(this.removeItem(index));
+        }
+
+        return operations;
     }
 }
