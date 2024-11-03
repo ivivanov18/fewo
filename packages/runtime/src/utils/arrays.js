@@ -25,31 +25,31 @@ export function arraysDiffSequence(
     const sequence = [];
     const array = new ArrayWithOriginalIndices(oldArray, equalsFn);
 
-    for (let i = 0; i < newArray.length; i++) {
-        // removal case
-        if (array.isRemoval(i, newArray)) {
-            sequence.push(array.removeItem(i));
-            i--;
+    for (let index = 0; index < newArray.length; index++) {
+        if (array.isRemoval(index, newArray)) {
+            sequence.push(array.removeItem(index));
+            index--;
             continue;
         }
 
-        if (array.isNoop(i, newArray)) {
-            sequence.push(array.noopItem(item));
+        if (array.isNoop(index, newArray)) {
+            sequence.push(array.noopItem(index));
             continue;
         }
 
-        const item = newArray[i];
+        const item = newArray[index];
 
-        if (array.isAddition(item, i)) {
-            sequence.push(array.addItem(item, i));
+        if (array.isAddition(item, index)) {
+            sequence.push(array.addItem(item, index));
             continue;
         }
 
-        sequence.push(array.moveItem(item, i));
-        sequence.push(...array.removeItemsAfter(newArray.length));
-
-        return sequence;
+        sequence.push(array.moveItem(item, index));
     }
+
+    sequence.push(...array.removeItemsAfter(newArray.length));
+
+    return sequence;
 }
 
 class ArrayWithOriginalIndices {
@@ -68,7 +68,7 @@ class ArrayWithOriginalIndices {
     }
 
     isRemoval(index, newArray) {
-        if (index > this.length) {
+        if (index >= this.length) {
             return false;
         }
 
