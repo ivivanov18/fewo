@@ -138,5 +138,7 @@ test("Should append at the end if the index is superior to the length of the chi
 
     mountDom(p, document.body, 20);
 
-    expect(document.body.innerHTML);
+    expect(document.body.innerHTML).toBe(
+        "<div></div><div></div><div></div><p>test</p>"
+    );
 });
