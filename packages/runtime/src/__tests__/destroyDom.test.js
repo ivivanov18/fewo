@@ -10,12 +10,12 @@ beforeEach(() => {
 test("Should destroy text element", () => {
     const text = "Test element";
     const vdom = fString(text);
-    mountDom(vdom);
+    mountDom(vdom, document.body);
 
     expect(document.body.innerHTML).toBe(text);
     expect(vdom.el).toBeInstanceOf(Text);
 
-    destroyDom(vdom);
+    destroyDom(vdom, document.body);
 
     expect(document.body.innerHTML).toBe("");
 });
@@ -26,7 +26,7 @@ test("Should destroy fragment node", () => {
         f("p", {}, [fString("This is a paragraph")]),
     ]);
 
-    mountDom(vdom);
+    mountDom(vdom, document.body);
 
     expect(document.body.innerHTML).toBe(
         "<div>This is a div</div><p>This is a paragraph</p>"

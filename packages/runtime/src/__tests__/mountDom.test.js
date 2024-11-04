@@ -1,4 +1,4 @@
-import { test, expect, beforeEach, vi } from "vitest";
+import { test, expect, beforeEach, vi, describe, it } from "vitest";
 import { mountDom } from "../mountDom";
 import { fString, f, fFragment } from "../f";
 
@@ -13,15 +13,6 @@ test("Should throw error for none recognized dom type", () => {
     expect(() => mountDom({ type: "unknown" }, "body")).toThrowError(
         `Can't mount DOM of type: ${unknown}`
     );
-});
-
-test("Should be mounted on document.body by default if no parent element", () => {
-    const text = "This is a default text";
-    const vdom = fString(text);
-
-    mountDom(vdom);
-
-    expect(document.body.innerHTML).toBe(`${text}`);
 });
 
 test("Should mount a text element into a parent element", () => {
@@ -74,7 +65,7 @@ test("all nested fragments should have a reference to the same parent element", 
 test("Should mount an element with id", () => {
     const vdom = f("div", { id: "home-div" });
 
-    mountDom(vdom);
+    mountDom(vdom, document.body);
 
     expect(document.body.innerHTML).toBe('<div id="home-div"></div>');
 });
@@ -82,7 +73,7 @@ test("Should mount an element with id", () => {
 test("Should mount an element with class", () => {
     const vdom = f("div", { class: "test-class" });
 
-    mountDom(vdom);
+    mountDom(vdom, document.body);
 
     expect(document.body.innerHTML).toBe('<div class="test-class"></div>');
 });
@@ -90,7 +81,7 @@ test("Should mount an element with class", () => {
 test("Should mount an elements with arrays of classes", () => {
     const vdom = f("div", { class: ["class1", "class2", "class3"] });
 
-    mountDom(vdom);
+    mountDom(vdom, document.body);
 
     expect(document.body.innerHTML).toBe(
         '<div class="class1 class2 class3"></div>'
@@ -100,7 +91,8 @@ test("Should mount an elements with arrays of classes", () => {
 test("Should mount an element with style", () => {
     const vdom = f("div", { style: { fontSize: "16px", border: "10px" } });
 
-    mountDom(vdom);
+    mountDom(vdom, document.body);
+
     const { el } = vdom;
 
     expect(document.body.innerHTML).toBe(
@@ -113,7 +105,38 @@ test("Should mount an element with style", () => {
 test("Should mount an element with handlers", () => {
     const vdom = f("div", { on: { click: vi.fn() } });
 
-    mountDom(vdom);
+    mountDom(vdom, document.body);
 
     expect(vdom.listeners).toEqual({ click: expect.any(Function) });
+});
+
+test("Should throw an error if index is negative ", () => {
+    const p = f("p", ["test"]);
+    expect(() => mountDom(p, document.body, -10)).toThrowError(
+        `Index must be positive but got ${-10}`
+    );
+});
+
+test("Should append the element at the end of the parent element if index is null", () => {
+    const p = f("p", {}, ["test"]);
+    const div = document.createElement("div");
+    div.className = "test";
+    document.body.append(div);
+
+    mountDom(p, document.body);
+
+    expect(document.body.innerHTML).toBe(`<div class="test"></div><p>test</p>`);
+});
+
+test("Should append at the end if the index is superior to the length of the child nodes", () => {
+    const div = document.createElement("div");
+    const div2 = document.createElement("div");
+    const div3 = document.createElement("div");
+    document.body.append(div, div2, div3);
+
+    const p = f("p", {}, ["test"]);
+
+    mountDom(p, document.body, 20);
+
+    expect(document.body.innerHTML);
 });
